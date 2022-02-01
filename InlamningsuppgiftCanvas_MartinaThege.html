@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inlämningsuppgift Canvas - Martina Thege</title>
+</head>
+<style>
+#spelet {
+    box-sizing: border-box;
+    width: 60%;
+    background: green; 
+    padding: 40px;
+
+}
+  #textbox {
+
+
+  box-sizing: border-box;
+width: 25%;
+border: solid green 10px;
+padding: 30px;
+  }
+
+</style>
+
+<body>
+    <h1 id="spelet">PONG! - av Martina Thege</h1>
+    <canvas id="canvas"></canvas>
+    <p id="textbox"></p>
+
+    <script>
+
+        let canvas = document.getElementById("canvas");
+        canvas.width = 500;
+        canvas.height = 300;
+        canvas.style.border = "1px solid black";
+        let ctx = canvas.getContext("2d");
+  
+        let x = 12; //var bollen ska börja 
+        let y = 150; //var bollen ska börja 
+        let speedX = 3; //hastigheten på bollen i x-led
+        let speedY = 1; //hastigheten på bollen i y-led
+        let radie = 10; //bollens radie
+        let yPos = 100 //racktens startposition
+        let points = 0; //räkna poängen
+
+        function animation() { //gör en funktion för animationen
+            ctx.clearRect(0, 0, canvas.width, canvas.height);//spelplanen
+            ctx.beginPath();
+            ctx.fillRect(450, yPos, 10, 70);//här gör jag racketen, vars y-position är relativ
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(x, y, radie, 0, 2 * Math.PI, false);//bollen 
+            ctx.closePath();
+            ctx.fill();
+            x += speedX; //hur bollen förflyttar sig
+            y += speedY;
+
+            let showPoints = document.getElementById('textbox');                
+            showPoints.innerHTML = "Dina poängen är: " + points;//här visar jag poängen under spelets gång 
+            
+
+            if (x <= radie)//bestämmer att bollen ska vända i motståndarens sida samt ge poäng till spelaren
+            {
+                speedX = -speedX;
+                points++;
+            }
+
+            if (y > canvas.height - radie || y < radie) {//bestämmer att bollen ska studsa på långsidorna 
+
+                speedY = -speedY;
+            }
+            if ((x >= 440) && (y > yPos && y < (yPos + 70)))//bollen studsar när det når racketen
+
+            {
+                speedX = -speedX;
+            }             
+            if (x >= canvas.width - radie){//om bollen når högra sidan 
+                gameover();//så kallar jag på funktionen som avslutar spelet
+
+            }
+            else{
+                requestAnimationFrame(animation)//annars fortsätter spelet
+            }
+        }
+        animation();//startar spelet
+
+        let arrow = window.addEventListener("keydown", function () { //gör att det händer saker när man trycker på tangenter
+            let kc = event.keyCode;
+            if (kc == 38) goUp();
+            if (kc == 40) goDown();//en funktion som styr racketen upp och ner
+
+        }, false);
+
+        function goUp() {
+
+            if (yPos > 0) yPos -= 12;
+        }
+        function goDown() {
+
+            if (yPos < 230) yPos += 12;
+        }
+        
+        function gameover() { //gör en funktion för när det är game over
+        
+           
+    
+                ctx.beginPath();
+                ctx.fillRect(95, 50, 300, 200);
+                ctx.fillStyle = "white";
+                ctx.font = "bold 30pt verdana";
+                ctx.fillText("GAMEOVER", 120, 120);
+                ctx.font = "bold 15pt verdana";
+                ctx.fillText(" DU FICK " + points + " POÄNG", 130, 180);
+                ctx.closePath();
+                ctx.fill();
+                
+                
+        }
+    
+    
+    </script>
+
+
+
+
+</body>
+
+</html>
